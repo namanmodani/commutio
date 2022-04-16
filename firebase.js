@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
-import { getFirestore, doc, setDoc, addDoc, collection } from "firebase/firestore"; 
+import { getFirestore, doc, setDoc, addDoc, collection, getDoc } from "firebase/firestore"; 
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -125,6 +125,16 @@ export const checkLogin = async (email, password) => {
             console.log("incorrect password!");
             return 3;
         }
-        return 2;
+        console.log("couldn't sign you in. please try again.")
+        return 4;
     }
+}
+
+const checkOnboarded = async (email) => {
+
+    console.log("checking whether the user has been onboarded");
+    const querySnapshot = await getDoc(doc(db, "Users", email));
+    const isOnboarded = querySnapshot.data().onBoarded;
+    console.log("onboard status: ",  onBoardStatus);
+    return isOnboarded;
 }
