@@ -130,7 +130,7 @@ export const checkLogin = async (email, password) => {
     }
 }
 
-const checkOnboarded = async (email) => {
+export const checkOnboarded = async (email) => {
 
     console.log("checking whether the user has been onboarded");
     const querySnapshot = await getDoc(doc(db, "Users", email));
