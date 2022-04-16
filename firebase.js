@@ -1,7 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getFirestore, doc, setDoc } from "firebase/firestore"; 
+// import { getAnalytics } from "firebase/analytics";
+import { getFirestore, doc, setDoc, addDoc, collection } from "firebase/firestore"; 
+import { auth, getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -20,7 +21,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);
+// export const analytics = getAnalytics(app);
 
 export const db = getFirestore(app);
 
@@ -40,23 +41,22 @@ const isValidEmail = (email) => {
 }
 
 const isValidPassword = (password, confirmPassword) => {
-
-  if (password != confirmPassword)
+  if (password != confirmPassword) {
       return false;
-
-  if (password == "")
+  }
+  if (password == "") {
       return false;
-
+  }
   return true;
 }
 
-const addUserToDB = async (email, password) => {
-
+export const addUserToDB = async (email, password) => {
+// TODO: remove password arg if never used
   try {
-      const response = await firestore().collection('Users').doc(email).set({
-          email: email,
-          onBoarded: false
-      })
+      const docRef = await addDoc(collection(db, 'Users'), {
+        email: email,
+        onBoarded: false
+      });
   }
   catch (error) {
       console.error("error adding user to database");
@@ -67,31 +67,37 @@ const addUserToDB = async (email, password) => {
 }
 
 export const addUser = async (email, password) => {
-
-  try {
-      const credential = await auth().createUserWithEmailAndPassword(email, password);
-      await credential.user.sendEmailVerification();
-      auth().signOut();
-      alert("Email sent");
-      console.log("Adding user : ", credential.user.email);
-      await addUserToDB(email, password);
-  }
-  catch (error) {
-      if (error.code == 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-          alert('That email address is already in use!');
-          console.error(error)
-          return 1;
-      }
-      if(error.code == 'auth/invalid-email') {
-          console.log('That email address is invalid!');
-          alert('That email address is invalid!');
-          console.error(error)
-          return 1;
-      }
-      console.log("Error in sending verification email")
-      console.error(error)
-      return 1;
-  }
-  return 0;
+    try {
+        console.log("attempt to create new user");
+        const auth = getAuth();
+        const credential = await createUserWithEmailAndPassword(auth, email, password);
+        // await credential.user.sendEmailVerification();
+        sendEmailVerification(credential.user);
+        await addUserToDB(email, password);
+        auth.signOut();
+        alert("Email sent");
+        console.log("Adding user : ", credential.user.email);
+    }
+    catch (error) {
+        if (error.code == 'auth/email-already-in-use') {
+            console.log('That email address is already in use!');
+            alert('That email address is already in use!');
+            console.error(error)
+            return 1;
+        }
+        if(error.code == 'auth/invalid-email') {
+            console.log('That email address is invalid!');
+            alert('That email address is invalid!');
+            console.error(error)
+            return 1;
+        }
+        console.log("Error in sending verification email")
+        console.error(error)
+        return 1;
+    }
+    return 0;
 }
+
+console.log("hello4");
+
+// addUserToDB("shlokj","noobj");
