@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import { getFirestore, doc, setDoc, addDoc, collection } from "firebase/firestore"; 
-import { auth, getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -22,12 +22,12 @@ const firebaseConfig = {
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 // export const analytics = getAnalytics(app);
-
+export const mAuth = getAuth();
 export const db = getFirestore(app);
 
 console.log("hello3");
 
-const isValidEmail = (email) => {
+export const isValidEmail = (email) => {
 
   if (!email.includes('@'))
       return false;
@@ -40,7 +40,7 @@ const isValidEmail = (email) => {
   return false;
 }
 
-const isValidPassword = (password, confirmPassword) => {
+export const isValidPassword = (password, confirmPassword) => {
   if (password != confirmPassword) {
       return false;
   }
@@ -55,7 +55,7 @@ export const addUserToDB = async (email, password) => {
   try {
       const docRef = await addDoc(collection(db, 'Users'), {
         email: email,
-        onBoarded: false
+        onBoarded: false // when a user is NOT onboarded, it means that they have 
       });
   }
   catch (error) {
@@ -69,12 +69,11 @@ export const addUserToDB = async (email, password) => {
 export const addUser = async (email, password) => {
     try {
         console.log("attempt to create new user");
-        const auth = getAuth();
-        const credential = await createUserWithEmailAndPassword(auth, email, password);
+        const credential = await createUserWithEmailAndPassword(mAuth, email, password);
         // await credential.user.sendEmailVerification();
         sendEmailVerification(credential.user);
         await addUserToDB(email, password);
-        auth.signOut();
+        mAuth.signOut();
         alert("Email sent");
         console.log("Adding user : ", credential.user.email);
     }
@@ -101,3 +100,31 @@ export const addUser = async (email, password) => {
 console.log("hello4");
 
 // addUserToDB("shlokj","noobj");
+
+export const checkLogin = async (email, password) => {
+    try {
+        const credential = await signInWithEmailAndPassword(mAuth, email, password);
+        console.log('Attempting to log in: ', email);
+        var curUser = mAuth.currentUser;
+        if (curUser.emailVerified) {
+            console.log("user verified, successful login");
+            return 0;
+        }
+        else {
+            console.log("correct pw, but user not verified");
+            return 1;
+        }
+    }
+    catch (error) {
+        console.log(error);
+        if (error.code == 'auth/user-not-found') {
+            console.log("couldn't find this email address in our database");
+            return 2;
+        }
+        else if (error.code == 'auth/wrong-password') {
+            console.log("incorrect password!");
+            return 3;
+        }
+        return 2;
+    }
+}

@@ -9,13 +9,13 @@ import StepButton from '../components/step-button';
 import GeneralButton from '../components/button';
 import { stepButtonClasses } from '@mui/material';
 
-import { addUser } from '../firebase';
+import { addUser, checkLogin } from '../firebase';
 
-addUser("shlokj@g.ucla.edu","password");
+// addUser("shlokj@g.ucla.edu","password");
+checkLogin("shlokj@g.ucla.edu","password");
 
 const Home: NextPage = () => {
   return (
-
       <div>
           <div >
               <h1 style = {{
