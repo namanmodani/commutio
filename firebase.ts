@@ -10,7 +10,7 @@ import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInW
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBc46sy-WFFWV3LGxfUjIz4uesxy-Y1TfY",
+  apiKey: "AIzaSyAyi_dL2s3UqyOc1-vrtQP-mHlGYbNS0u4",
   authDomain: "commutio-app.firebaseapp.com",
   projectId: "commutio-app",
   storageBucket: "commutio-app.appspot.com",

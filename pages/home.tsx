@@ -103,7 +103,7 @@ function Home() {
             const splitAddress = location.split(' ').join('+');
             const url = "https://maps.googleapis.com/maps/api/geocode/json?address="
                 + splitAddress +
-                "&key=AIzaSyBsQupatrR8RnumOlovsyF6pC-gW98tgoI";
+                "&key=AIzaSyAyi_dL2s3UqyOc1-vrtQP-mHlGYbNS0u4";
 
             const response = await axios.get(url);
 
