@@ -4,7 +4,7 @@ import { Col, FloatingLabel, Row, Form } from "react-bootstrap";
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { app } from './../firebase';
-import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword} from "firebase/auth";
+import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
 import Router from "next/router";
 
 const signIn = async (email: string, password: string) => {
@@ -13,12 +13,33 @@ const signIn = async (email: string, password: string) => {
             const user = userCredential.user;
             console.log(user);
             window.sessionStorage.setItem("loginEmail", email);
-            await Router.push('/home');
+            if (user.emailVerified) {
+                // alert('w');
+                // console.log("user verified, sign in")
+                await Router.push('/home');
+                return 0;
+            }
+            else {
+                sendEmailVerification(user);
+                alert("Your email has not been verified. The verification email has been resent; please click on the link to verify.");
+                return 1;
+                // await Router.push('/');
+            }
         })
         .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            alert(errorMessage);
+            console.log(error);
+            if (error.code == 'auth/user-not-found') {
+                alert("Couldn't find this email address in our database! Please sign up.");
+                Router.push('/signup')
+                return 2;
+            }
+            else if (error.code == 'auth/wrong-password') {
+                alert("Incorrect password!");
+                console.log("Incorrect password!");
+                return 3;
+            }
+            console.log("Couldn't sign you in. Please try again.")
+            return 4;
         });
 }
 
