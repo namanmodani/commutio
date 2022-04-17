@@ -29,41 +29,7 @@ const addUserToDB = async (email, password) => {
           return 1;
       }
       return 0;
-    }
-
-// const signUp = (
-//     email: string,
-//     password: string
-// ) => {
-//     createUserWithEmailAndPassword(getAuth(app), email, password)
-//         .then(async (userCredential) => {
-//             console.log("attempt to create new user");
-//             const credential = await createUserWithEmailAndPassword(mAuth, email, password);
-//             // await credential.user.sendEmailVerification();
-//             sendEmailVerification(credential.user);
-//             await addUserToDB(email, password);
-//             mAuth.signOut();
-//             alert("Email sent");
-//             console.log("Adding user : ", credential.user.email);
-//         })
-//         .catch((error) => {
-//             if (error.code == 'auth/email-already-in-use') {
-//                 console.log('That email address is already in use!');
-//                 alert('That email address is already in use!');
-//                 console.error(error)
-//                 return 1;
-//             }
-//             if(error.code == 'auth/invalid-email') {
-//                 console.log('That email address is invalid!');
-//                 alert('That email address is invalid!');
-//                 console.error(error)
-//                 return 1;
-//             }
-//             console.log("Error in sending verification email")
-//             console.error(error)
-//             return 1;
-//         });
-// };
+}
 
 const signUp = (
     email: string,

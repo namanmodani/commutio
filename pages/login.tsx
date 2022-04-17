@@ -4,8 +4,25 @@ import { Col, FloatingLabel, Row, Form } from "react-bootstrap";
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { app } from './../firebase';
+import { getFirestore, doc, setDoc, addDoc, collection, getDoc, getDocs } from "firebase/firestore"; 
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
 import Router from "next/router";
+
+const db = getFirestore(app);
+
+const checkOnboarded = async (email) => {
+    try {
+        console.log("checking whether the user has been onboarded");
+        const querySnapshot = await getDoc(doc(db, "Users", email));
+        const isOnboarded = querySnapshot.data().isOnboarded;
+        console.log("onboard status: ",  isOnboarded);
+        return isOnboarded;
+    }
+    catch (error) {
+        console.log("user not onboarded");
+        return false;
+    }
+}
 
 const signIn = async (email: string, password: string) => {
     signInWithEmailAndPassword(getAuth(app), email, password)
@@ -16,7 +33,12 @@ const signIn = async (email: string, password: string) => {
             if (user.emailVerified) {
                 // alert('w');
                 // console.log("user verified, sign in")
-                await Router.push('/home');
+                if (await checkOnboarded(email)) {
+                    await Router.push('/home');
+                }
+                else {
+                    await Router.push('/onboard');
+                }
                 return 0;
             }
             else {
