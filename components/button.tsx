@@ -15,7 +15,7 @@ const style = {
     borderRadius: '10px',
     textAlign: "center",
     color: '#ffffff',
-    marginTop: "14px",
+    marginTop: "20px",
 
 } as React.CSSProperties;
 

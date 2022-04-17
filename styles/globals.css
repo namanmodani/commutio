@@ -26,11 +26,6 @@ a {
   box-sizing: border-box;
 }
 
-#logo {
-  width: 130px;
-  height: 200px;
-}
-
 .loginbutton {
 
   margin: 50px;
