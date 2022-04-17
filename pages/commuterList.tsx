@@ -114,7 +114,7 @@ const commuters = () => {
       <h1 style={{
           marginTop: "50px",
           fontSize: "40px",
-          color: "#9381ff",
+          color: "#000000",
           fontWeight: "bold",
       }}> Your commuters</h1>
 
@@ -124,7 +124,6 @@ const commuters = () => {
                       email={window.sessionStorage.getItem("commuterLoginEmail")}
                   />
           ) : <Spinner animation="border" /> }
-
           </Col> );
           }
 

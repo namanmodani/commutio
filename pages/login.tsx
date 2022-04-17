@@ -4,25 +4,8 @@ import { Col, FloatingLabel, Row, Form } from "react-bootstrap";
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { app } from './../firebase';
-import { getFirestore, doc, setDoc, addDoc, collection, getDoc, getDocs } from "firebase/firestore"; 
-import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
+import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword} from "firebase/auth";
 import Router from "next/router";
-
-const db = getFirestore(app);
-
-const checkOnboarded = async (email) => {
-    try {
-        console.log("checking whether the user has been onboarded");
-        const querySnapshot = await getDoc(doc(db, "Users", email));
-        const isOnboarded = querySnapshot.data().isOnboarded;
-        console.log("onboard status: ",  isOnboarded);
-        return isOnboarded;
-    }
-    catch (error) {
-        console.log("user not onboarded");
-        return false;
-    }
-}
 
 const signIn = async (email: string, password: string) => {
     signInWithEmailAndPassword(getAuth(app), email, password)
@@ -30,38 +13,12 @@ const signIn = async (email: string, password: string) => {
             const user = userCredential.user;
             console.log(user);
             window.sessionStorage.setItem("loginEmail", email);
-            if (user.emailVerified) {
-                // alert('w');
-                // console.log("user verified, sign in")
-                if (await checkOnboarded(email)) {
-                    await Router.push('/home');
-                }
-                else {
-                    await Router.push('/onboard');
-                }
-                return 0;
-            }
-            else {
-                sendEmailVerification(user);
-                alert("Your email has not been verified. The verification email has been resent; please click on the link to verify.");
-                return 1;
-                // await Router.push('/');
-            }
+            await Router.push('/home');
         })
         .catch((error) => {
-            console.log(error);
-            if (error.code == 'auth/user-not-found') {
-                alert("Couldn't find this email address in our database! Please sign up.");
-                Router.push('/signup')
-                return 2;
-            }
-            else if (error.code == 'auth/wrong-password') {
-                alert("Incorrect password!");
-                console.log("Incorrect password!");
-                return 3;
-            }
-            console.log("Couldn't sign you in. Please try again.")
-            return 4;
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            alert(errorMessage);
         });
 }
 
