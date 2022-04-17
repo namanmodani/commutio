@@ -4,25 +4,20 @@ import { Button } from "react-bootstrap";
 
 const style = {
 
-    width: '',
-    height: '',
-
-    background: '#',
-    border: '',
-    fontFamily: "",
-    fontStyle: '',
-    fontWeight: '',
-    fontSize: '',
-    borderRadius: '',
-    textTransform: '',
-    textAlign: "",
-    color: '',
-    marginTop: "",
-    outline: '',
-    boxShadow: ""
+    width: '275px',
+    height: '60px',
+    background: '#000000',
+    border: 'none',
+    fontFamily: "Inter, sans-serif",
+    fontStyle: 'normal',
+    fontSize: '24px',
+    paddingTop: '10px',
+    borderRadius: '10px',
+    textAlign: "center",
+    color: '#ffffff',
+    marginTop: "14px",
 
 } as React.CSSProperties;
-
 
 const GeneralButton: FunctionComponent<{ name: string, className?: string, href?: string, onclick?: any, type?: string }> = props => {
 
